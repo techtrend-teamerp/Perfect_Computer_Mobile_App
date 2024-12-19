@@ -1,0 +1,36 @@
+import 'package:get/get.dart';
+import 'package:perfect_computer/api/api_implementer.dart';
+import 'package:perfect_computer/modules/login/models/get_country_code_and_flag_model.dart';
+import 'package:perfect_computer/utils/ui/app_dialogs.dart';
+import 'package:perfect_computer/utils/ui/ui_utils.dart';
+
+class LoginController extends GetxController {
+  /// variable for Country code and flag
+  RxInt selectedCountryCode = (-1).obs;
+  RxBool isLoading = true.obs;
+  RxList<GetCountryCodeAndFlagModel> countryCodeAndFlagList =
+      <GetCountryCodeAndFlagModel>[].obs;
+
+  /// api call for get country code and flag
+  Future<void> getCountryCodeAndFlagData() async {
+    try {
+      AppDialogs.showProgressDialog();
+      isLoading.value = true;
+      var response = await ApiImplementer.getCountryCodeAndFlagApiCall();
+      if (response.status == 1 && response.result.isNotEmpty) {
+        countryCodeAndFlagList.value = response.result;
+        for (int i = 0; i < countryCodeAndFlagList.length; i++) {
+          countryCodeAndFlagList[i].position = i;
+        }
+        if (countryCodeAndFlagList.length == 1) {
+          selectedCountryCode.value = 0;
+        }
+      }
+    } catch (e) {
+      UiUtils.errorSnackBar(message: 'Something went wrong');
+    } finally {
+      Get.back();
+      isLoading.value = false;
+    }
+  }
+}

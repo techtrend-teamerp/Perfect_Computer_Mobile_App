@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.techtrend.perfect_computer"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +36,17 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
         }
+        // Start
+        android.applicationVariants.all { variant ->
+            variant.outputs.all {
+                def AppName = "Perfect_Computer"
+                def date = new Date()
+                def formattedDate = date.format('dd-MM-yyyy')
+                def formattedTime = date.format('HH_mm')
+                outputFileName = AppName + "_" + formattedDate + "_" + formattedTime + "_prod_v" + "${variant.versionName}" + ".apk"
+            }
+        }
+        // End
     }
 }
 
